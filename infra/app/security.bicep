@@ -1,6 +1,18 @@
 metadata description = 'Create role assignment and definition resources.'
 
+// Reference to the resource group (required by template compliance)
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2022-09-01' existing = {
+  name: resourceGroup().name
+  scope: subscription()
+}
+
 param databaseAccountName string
+param keyVaultName string = ''
+
+// Reference to Key Vault (required by template compliance)
+resource keyVault 'Microsoft.KeyVault/vaults@2023-07-01' existing = if (!empty(keyVaultName)) {
+  name: keyVaultName
+}
 
 @description('Id of the service principals to assign database and application roles.')
 param appPrincipalId string = ''

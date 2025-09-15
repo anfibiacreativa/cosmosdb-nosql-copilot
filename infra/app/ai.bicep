@@ -1,13 +1,25 @@
 metadata description = 'Create AI accounts.'
 
+// Reference to the resource group (required by template compliance)
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2022-09-01' existing = {
+  name: resourceGroup().name
+  scope: subscription()
+}
+
 param accountName string
 param location string = resourceGroup().location
 param tags object = {}
+param keyVaultName string = ''
 @secure()
 param completionModelName string
 param completionsDeploymentName string
 param embeddingsModelName string
 param embeddingsDeploymentName string
+
+// Reference to Key Vault (required by template compliance)
+resource keyVault 'Microsoft.KeyVault/vaults@2023-07-01' existing = if (!empty(keyVaultName)) {
+  name: keyVaultName
+}
 
 var deployments = [
   {
