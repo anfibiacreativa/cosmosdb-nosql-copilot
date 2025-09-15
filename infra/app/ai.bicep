@@ -1,7 +1,7 @@
 metadata description = 'Create AI accounts.'
 
 // Reference to the resource group (required by template compliance)
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2022-09-01' existing = {
+resource currentResourceGroup 'Microsoft.Resources/resourceGroups@2022-09-01' existing = {
   name: resourceGroup().name
   scope: subscription()
 }
@@ -41,6 +41,7 @@ module openAiAccount '../core/ai/cognitive-services/account.bicep' = {
   params: {
     name: accountName
     location: location
+    keyVaultName: keyVaultName
     tags: tags
     kind: 'OpenAI'
     sku: 'S0'
@@ -54,6 +55,7 @@ module openAiModelDeployments '../core/ai/cognitive-services/deployment.bicep' =
     name: 'openai-model-deployment-${deployment.name}'
     params: {
       name: deployment.name
+      keyVaultName: keyVaultName
       parentAccountName: openAiAccount.outputs.name
       skuName: 'Standard'
       skuCapacity: deployment.skuCapacity

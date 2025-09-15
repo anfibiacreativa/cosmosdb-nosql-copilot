@@ -74,7 +74,6 @@ module identity 'app/identity.bicep' = {
   params: {
     identityName: !empty(userAssignedIdentityName) ? userAssignedIdentityName : '${abbreviations.userAssignedIdentity}-${resourceToken}'
     location: location
-    keyVaultName: keyVault.outputs.name
     tags: tags
   }
 }

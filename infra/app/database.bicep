@@ -1,7 +1,7 @@
 metadata description = 'Create database accounts.'
 
 // Reference to the resource group (required by template compliance)
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2022-09-01' existing = {
+resource currentResourceGroup 'Microsoft.Resources/resourceGroups@2022-09-01' existing = {
   name: resourceGroup().name
   scope: subscription()
 }
@@ -158,6 +158,7 @@ module cosmosDbAccount '../core/database/cosmos-db/nosql/account.bicep' = {
   params: {
     name: accountName
     location: location
+    keyVaultName: keyVaultName
     tags: tags
     enableServerless: true
     enableVectorSearch: true
@@ -171,6 +172,7 @@ module cosmosDbDatabase '../core/database/cosmos-db/nosql/database.bicep' = {
   params: {
     name: database.name
     parentAccountName: cosmosDbAccount.outputs.name
+    keyVaultName: keyVaultName
     tags: tags
     setThroughput: false
   }
@@ -183,6 +185,7 @@ module cosmosDbContainers '../core/database/cosmos-db/nosql/container.bicep' = [
       name: container.name
       parentAccountName: cosmosDbAccount.outputs.name
       parentDatabaseName: cosmosDbDatabase.outputs.name
+      keyVaultName: keyVaultName
       tags: tags
       setThroughput: false
       partitionKeyPaths: container.partitionKeyPaths

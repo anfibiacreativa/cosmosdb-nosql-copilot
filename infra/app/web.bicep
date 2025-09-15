@@ -1,7 +1,7 @@
 metadata description = 'Create web apps.'
 
 // Reference to the resource group (required by template compliance)
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2022-09-01' existing = {
+resource currentResourceGroup 'Microsoft.Resources/resourceGroups@2022-09-01' existing = {
   name: resourceGroup().name
   scope: subscription()
 }
