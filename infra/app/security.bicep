@@ -31,6 +31,7 @@ module nosqlDefinition '../core/database/cosmos-db/nosql/role/definition.bicep' 
   name: 'nosql-role-definition'
   params: {
     targetAccountName: database.name // Existing account
+    keyVaultName: keyVaultName
     definitionName: 'Write to Azure Cosmos DB for NoSQL data plane' // Custom role name
     permissionsDataActions: [
       'Microsoft.DocumentDB/databaseAccounts/readMetadata' // Read account metadata
@@ -44,6 +45,7 @@ module nosqlAppAssignment '../core/database/cosmos-db/nosql/role/assignment.bice
   name: 'nosql-role-assignment-app'
   params: {
     targetAccountName: database.name // Existing account
+    keyVaultName: keyVaultName
     roleDefinitionId: nosqlDefinition.outputs.id // New role definition
     principalId: appPrincipalId // Principal to assign role
     principalType: principalType // Principal type for assigning role
@@ -54,6 +56,7 @@ module nosqlUserAssignment '../core/database/cosmos-db/nosql/role/assignment.bic
   name: 'nosql-role-assignment-user'
   params: {
     targetAccountName: database.name // Existing account
+    keyVaultName: keyVaultName
     roleDefinitionId: nosqlDefinition.outputs.id // New role definition
     principalId: userPrincipalId ?? '' // Principal to assign role
     principalType: principalType // Principal type for assigning role
@@ -63,6 +66,7 @@ module nosqlUserAssignment '../core/database/cosmos-db/nosql/role/assignment.bic
 module openaiAppAssignment '../core/security/role/assignment.bicep' = if (!empty(appPrincipalId)) {
   name: 'openai-role-assignment-read-app'
   params: {
+    keyVaultName: keyVaultName
     roleDefinitionId: subscriptionResourceId(
       'Microsoft.Authorization/roleDefinitions',
       '5e0bd9bd-7b93-4f28-af87-19fc36ad61bd'
@@ -75,6 +79,7 @@ module openaiAppAssignment '../core/security/role/assignment.bicep' = if (!empty
 module openaiUserAssignment '../core/security/role/assignment.bicep' = if (!empty(userPrincipalId)) {
   name: 'openai-role-assignment-read-user'
   params: {
+    keyVaultName: keyVaultName
     roleDefinitionId: subscriptionResourceId(
       'Microsoft.Authorization/roleDefinitions',
       '5e0bd9bd-7b93-4f28-af87-19fc36ad61bd'

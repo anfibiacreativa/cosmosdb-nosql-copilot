@@ -80,6 +80,7 @@ module appServiceWebApp '../core/host/app-service/site.bicep' = {
   params: {
     name: appName
     location: location
+    keyVaultName: keyVaultName
     tags: union(tags, {
       'azd-service-name': serviceTag
     })
@@ -98,6 +99,7 @@ module appServiceWebAppConfig '../core/host/app-service/config.bicep' = {
   name: 'app-service-config'
   params: {
     parentSiteName: appServiceWebApp.outputs.name
+    keyVaultName: keyVaultName
     appSettings: {
       OPENAI__ENDPOINT: openAiAccountEndpoint
       OPENAI__COMPLETIONDEPLOYMENTNAME: openAiSettings.completionDeploymentName
