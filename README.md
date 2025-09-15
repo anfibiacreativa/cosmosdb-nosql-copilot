@@ -39,6 +39,8 @@ This application demonstrates the following concepts and how to implement them:
 - Building a semantic cache for improved performance and cost.
 - Implementing full-text and hybrid search using Azure Cosmos DB for NoSQL.
 
+## Architecture
+
 ### Architecture Diagram
 
 ![Architecture Diagram](./media/cosmos-nosql-copilot-diagram.png)
@@ -47,9 +49,7 @@ This application demonstrates the following concepts and how to implement them:
 
 ![Cosmos Copilot app user interface](./media/screenshot.png)
 
-## Getting Started
-
-### Prerequisites
+## Prerequisites
 
 - Azure subscription.
 - Subscription access to Azure OpenAI service. Start here to [Request Access to Azure OpenAI Service](https://aka.ms/oaiapply). If you have access, see below for ensuring enough quota to deploy.
@@ -57,22 +57,22 @@ This application demonstrates the following concepts and how to implement them:
 - [Azure Developer CLI](https://aka.ms/azd-install)
 - Visual Studio, VS Code, GitHub Codespaces or another editor to edit or view the source for this sample.
 
-#### Deploying Azure OpenAI supported regions
+### Deploying Azure OpenAI supported regions
 
 The models used for this sample are **gpt-4o** and **text-3-large**. These models are not deployed in all regions and are not always present in the same region. The regions shown in the main.bicep are the known regions both models are supported in at the time this readme was last updated. To check if these models are available in additional regions, see [Azure OpenAI Service Models](https://learn.microsoft.com/azure/ai-services/openai/concepts/models)
 
-#### Checking Azure OpenAI quota limits
+### Checking Azure OpenAI quota limits
 
 For this sample to deploy successfully, there needs to be enough Azure OpenAI quota for the models used by this sample within your subscription. This sample deploys a new Azure OpenAI account with two models, **gpt-4o with 10K tokens** per minute and **text-3-large with 5k tokens** per minute. For more information on how to check your model quota and change it, see [Manage Azure OpenAI Service Quota](https://learn.microsoft.com/azure/ai-services/openai/how-to/quota)
 
-#### Azure Subscription Permission Requirements
+### Azure Subscription Permission Requirements
 
 This solution deploys [user-assigned managed identities](https://learn.microsoft.com/entra/identity/managed-identities-azure-resources/overview) and defines then applies Azure Cosmos DB RBAC permissions to this identity. At a minimum you will need the following Azure RBAC roles assigned to your identity in your Azure subscription or [Subscription Owner](https://learn.microsoft.com/azure/role-based-access-control/built-in-roles/privileged#owner) access which will give you both of the following.
 
 - [Manged Identity Contributor](https://learn.microsoft.com/azure/role-based-access-control/built-in-roles/identity#managed-identity-contributor)
 - [DocumentDB Account Contributor](https://learn.microsoft.com/azure/role-based-access-control/built-in-roles/databases#documentdb-account-contributor)
 
-#### Full-Text & Hyrbrid Search Feature
+### Full-Text & Hyrbrid Search Feature
 
 Full-text and hybrid search in Azure Cosmos DB is in Preview and only available to a subset of regions at this time. This feature is commented out in the GetChatCompletionAsync() function in the ChatService. To use this feature you must deploy this sample in either `northcentralus` or `uksouth`.
 
@@ -89,6 +89,8 @@ module database 'app/database.bicep' = {
   }
 }
 ```
+
+## Getting Started
 
 ### GitHub Codespaces
 
