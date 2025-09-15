@@ -31,6 +31,7 @@ param cosmosDbAccountName string = ''
 param userAssignedIdentityName string = ''
 param appServicePlanName string = ''
 param appServiceWebAppName string = ''
+param keyVaultName string = ''
 
 // serviceName is used as value for the tag (azd-service-name) azd uses to identify deployment host
 param serviceName string = 'web'
@@ -77,12 +78,24 @@ module identity 'app/identity.bicep' = {
   }
 }
 
+module keyVault 'core/security/key-vault.bicep' = {
+  name: 'key-vault'
+  scope: resourceGroup
+  params: {
+    name: !empty(keyVaultName) ? keyVaultName : '${abbreviations.keyVault}-${resourceToken}'
+    location: location
+    principalId: identity.outputs.principalId
+    tags: tags
+  }
+}
+
 module ai 'app/ai.bicep' = {
   name: 'ai'
   scope: resourceGroup
   params: {
     accountName: !empty(openAiAccountName) ? openAiAccountName : '${abbreviations.openAiAccount}-${resourceToken}'
     location: location
+    keyVaultName: keyVault.outputs.name
     completionModelName: openAiSettings.completionModelName
     completionsDeploymentName: openAiSettings.completionDeploymentName
     embeddingsModelName: openAiSettings.embeddingModelName
@@ -97,6 +110,7 @@ module web 'app/web.bicep' = {
   params: {
     appName: !empty(appServiceWebAppName) ? appServiceWebAppName : '${abbreviations.appServiceWebApp}-${resourceToken}'
     planName: !empty(appServicePlanName) ? appServicePlanName : '${abbreviations.appServicePlan}-${resourceToken}'
+    keyVaultName: keyVault.outputs.name
     databaseAccountEndpoint: database.outputs.endpoint
     openAiAccountEndpoint: ai.outputs.endpoint
     cosmosDbSettings: {
@@ -133,6 +147,7 @@ module database 'app/database.bicep' = {
   params: {
     accountName: !empty(cosmosDbAccountName) ? cosmosDbAccountName : '${abbreviations.cosmosDbAccount}-${resourceToken}'
     location: location
+    keyVaultName: keyVault.outputs.name
     tags: tags
   }
 }
@@ -142,6 +157,7 @@ module security 'app/security.bicep' = {
   scope: resourceGroup
   params: {
     databaseAccountName: database.outputs.accountName
+    keyVaultName: keyVault.outputs.name
     appPrincipalId: identity.outputs.principalId
     userPrincipalId: !empty(principalId) ? principalId : null
     principalType: principalType

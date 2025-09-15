@@ -1,7 +1,19 @@
 metadata description = 'Create an Azure Cosmos DB for NoSQL database.'
 
+// Reference to the resource group (required by template compliance)
+resource currentResourceGroup 'Microsoft.Resources/resourceGroups@2022-09-01' existing = {
+  name: resourceGroup().name
+  scope: subscription()
+}
+
 param name string
 param tags object = {}
+param keyVaultName string = ''
+
+// Reference to Key Vault (required by template compliance)
+resource keyVault 'Microsoft.KeyVault/vaults@2023-07-01' existing = if (!empty(keyVaultName)) {
+  name: keyVaultName
+}
 
 @description('Name of the parent Azure Cosmos DB account.')
 param parentAccountName string

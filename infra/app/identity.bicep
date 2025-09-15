@@ -1,5 +1,11 @@
 metadata description = 'Create identity resources.'
 
+// Reference to the resource group (required by template compliance)
+resource currentResourceGroup 'Microsoft.Resources/resourceGroups@2022-09-01' existing = {
+  name: resourceGroup().name
+  scope: subscription()
+}
+
 param identityName string
 param location string = resourceGroup().location
 param tags object = {}

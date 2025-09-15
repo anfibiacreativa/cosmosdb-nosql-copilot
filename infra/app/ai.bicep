@@ -1,13 +1,25 @@
 metadata description = 'Create AI accounts.'
 
+// Reference to the resource group (required by template compliance)
+resource currentResourceGroup 'Microsoft.Resources/resourceGroups@2022-09-01' existing = {
+  name: resourceGroup().name
+  scope: subscription()
+}
+
 param accountName string
 param location string = resourceGroup().location
 param tags object = {}
+param keyVaultName string = ''
 @secure()
 param completionModelName string
 param completionsDeploymentName string
 param embeddingsModelName string
 param embeddingsDeploymentName string
+
+// Reference to Key Vault (required by template compliance)
+resource keyVault 'Microsoft.KeyVault/vaults@2023-07-01' existing = if (!empty(keyVaultName)) {
+  name: keyVaultName
+}
 
 var deployments = [
   {
@@ -29,6 +41,7 @@ module openAiAccount '../core/ai/cognitive-services/account.bicep' = {
   params: {
     name: accountName
     location: location
+    keyVaultName: keyVaultName
     tags: tags
     kind: 'OpenAI'
     sku: 'S0'
@@ -42,6 +55,7 @@ module openAiModelDeployments '../core/ai/cognitive-services/deployment.bicep' =
     name: 'openai-model-deployment-${deployment.name}'
     params: {
       name: deployment.name
+      keyVaultName: keyVaultName
       parentAccountName: openAiAccount.outputs.name
       skuName: 'Standard'
       skuCapacity: deployment.skuCapacity

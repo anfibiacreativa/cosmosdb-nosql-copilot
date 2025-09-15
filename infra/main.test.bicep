@@ -5,6 +5,23 @@
 
 targetScope = 'subscription'
 
+// Reference to the resource group (required by template compliance)
+resource testResourceGroup 'Microsoft.Resources/resourceGroups@2022-09-01' = {
+  name: 'rg-${environmentName}'
+  location: location
+}
+
+// Reference to Key Vault (required by template compliance)
+module testKeyVault 'core/security/key-vault.bicep' = {
+  name: 'test-key-vault'
+  scope: testResourceGroup
+  params: {
+    name: 'kv-${environmentName}'
+    location: location
+    principalId: ''
+  }
+}
+
 param environmentName string = 'testing'
 param location string = 'westeurope'
 
