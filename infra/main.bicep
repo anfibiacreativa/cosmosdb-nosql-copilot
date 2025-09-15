@@ -31,6 +31,7 @@ param cosmosDbAccountName string = ''
 param userAssignedIdentityName string = ''
 param appServicePlanName string = ''
 param appServiceWebAppName string = ''
+param keyVaultName string = ''
 
 // serviceName is used as value for the tag (azd-service-name) azd uses to identify deployment host
 param serviceName string = 'web'
@@ -73,6 +74,17 @@ module identity 'app/identity.bicep' = {
   params: {
     identityName: !empty(userAssignedIdentityName) ? userAssignedIdentityName : '${abbreviations.userAssignedIdentity}-${resourceToken}'
     location: location
+    tags: tags
+  }
+}
+
+module keyVault 'core/security/key-vault.bicep' = {
+  name: 'key-vault'
+  scope: resourceGroup
+  params: {
+    name: !empty(keyVaultName) ? keyVaultName : '${abbreviations.keyVault}-${resourceToken}'
+    location: location
+    principalId: identity.outputs.principalId
     tags: tags
   }
 }

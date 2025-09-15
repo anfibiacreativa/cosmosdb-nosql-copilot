@@ -3,5 +3,6 @@
   "openAiAccount": "openai",
   "userAssignedIdentity": "ua-id",
   "appServiceWebApp": "web",
-  "appServicePlan": "plan"
+  "appServicePlan": "plan",
+  "keyVault": "kv"
 }
